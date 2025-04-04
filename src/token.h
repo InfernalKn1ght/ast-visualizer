@@ -29,7 +29,7 @@ public:
     std::unique_ptr<Token> clone() const;
 
     Token(unsigned int _tag = 0) : tag(_tag) {}
-    //Token(const Token &token);
+    // Token(const Token &token);
     virtual ~Token() {}
 
 protected:
@@ -42,7 +42,7 @@ public:
     void print() const override;
 
     Word(unsigned int _tag = 0, std::string _lexeme = "") : Token(_tag), lexeme(_lexeme) {}
-    //Word(const Word &word);
+    // Word(const Word &word);
     virtual ~Word() = default;
 
 protected:
@@ -67,6 +67,7 @@ public:
 
 class Type : public Word {
 public:
+    void print() const override;
     Type(std::string _lexeme = "") : Word(Tag::BASIC_TYPE, _lexeme) {}
     Type(const Type &type);
     virtual ~Type() = default;

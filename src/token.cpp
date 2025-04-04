@@ -34,3 +34,7 @@ void Real::print() const {
 }
 
 Type::Type(const Type &type) {}
+
+void Type::print() const {
+    std::cout << tag << " " << lexeme << std::endl;
+}

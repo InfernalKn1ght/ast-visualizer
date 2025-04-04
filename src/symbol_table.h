@@ -6,8 +6,8 @@
 
 class STable {
 private:
-    std::shared_ptr<STable> prev; // TODO: заменить на unique_ptr
-    std::unordered_map<std::string, Id> table; // TODO: возможно поменять на Token*
+    std::shared_ptr<STable> prev; 
+    std::unordered_map<std::string, Id> table;
 
 public:
     std::unique_ptr<Id> get(std::string &lexeme);
@@ -16,4 +16,3 @@ public:
     ~STable() {}
 };
 
-// TODO: все переделать

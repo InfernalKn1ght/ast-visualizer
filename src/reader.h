@@ -3,11 +3,12 @@
 #include <fstream>
 
 class Reader {
-private:
-    std::ifstream input_text;
-
 public:
-    bool read_symbol(char &peek);
+    bool reader_eof();
+    void read_symbol(char &peek);
     Reader(const std::string &file_name);
     ~Reader();
+
+private:
+    std::ifstream _input_text;
 };

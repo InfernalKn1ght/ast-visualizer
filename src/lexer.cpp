@@ -10,6 +10,7 @@ void Lexer::read_peek() {
 }
 
 bool Lexer::next_char(const char &c) {
+    read_peek();
     if (c != _peek) {
         return 0;
     }
