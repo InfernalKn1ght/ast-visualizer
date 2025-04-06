@@ -12,7 +12,8 @@ int main(int argc, char*argv[]) {
     // }
 
     Parser p("input.c");
-    p.program();
+    std::unique_ptr<Stmt> ast = std::move(p.program());
+    ast->print();
 
 
     return 0;

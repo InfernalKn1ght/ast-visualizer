@@ -15,7 +15,7 @@ private:
 
 public:
     Parser(const std::string &file_name);
-    void program();
+    std::unique_ptr<Stmt> program();
     std::unique_ptr<Stmt> block();
     void decls();
     std::unique_ptr<Stmt> stmts();

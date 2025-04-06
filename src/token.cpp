@@ -4,7 +4,7 @@
 //Token::Token(const Token &token) : tag(token.tag) {}
 
 void Token::print() const {
-    std::cout << (char)tag << std::endl;
+    std::cout << (char)tag;
 }
 
 std::unique_ptr<Token> Token::clone() const {
@@ -22,19 +22,19 @@ Word *Word::get_clone() const {
 }
 
 void Word::print() const {
-    std::cout << tag << " " << lexeme << std::endl;
+    std::cout << "[tag: " << tag << "] " <<lexeme;
 }
 
 void Num::print() const {
-    std::cout << tag << " " << val << std::endl;
+    std::cout << "[tag: " << tag << "] " << val;
 }
 
 void Real::print() const {
-    std::cout << tag << " " << val << std::endl;
+    std::cout << "[tag: " << tag << "] " << val;
 }
 
 Type::Type(const Type &type) {}
 
 void Type::print() const {
-    std::cout << tag << " " << lexeme << std::endl;
+    std::cout << "[tag: " << tag << "] " << lexeme;
 }

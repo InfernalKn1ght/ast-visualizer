@@ -23,8 +23,9 @@ void Parser::match_and_move(unsigned int tok) {
     next();
 }
 
-void Parser::program() { // TODO: add decls check before first block (global variables)
+std::unique_ptr<Stmt> Parser::program() { // TODO: add decls check before first block (global variables)
     std::unique_ptr<Stmt> stmt = block();
+    return stmt;
 }
 
 std::unique_ptr<Stmt> Parser::block() {
