@@ -26,6 +26,7 @@ class Token {
 public:
     unsigned int tag;
     virtual void print() const;
+    virtual std::string token_string() const;
     std::unique_ptr<Token> clone() const;
 
     Token(unsigned int _tag = 0) : tag(_tag) {}
@@ -40,6 +41,7 @@ class Word : public Token {
 public:
     std::string lexeme;
     void print() const override;
+    virtual std::string token_string() const;
 
     Word(unsigned int _tag = 0, std::string _lexeme = "") : Token(_tag), lexeme(_lexeme) {}
     // Word(const Word &word);
@@ -53,6 +55,7 @@ class Num : public Token {
 public:
     int val;
     void print() const override;
+    virtual std::string token_string() const;
     Num(int _val) : Token(Tag::NUM), val(_val) {}
     virtual ~Num() = default;
 };
@@ -61,6 +64,7 @@ class Real : public Token {
 public:
     double val;
     void print() const override;
+    virtual std::string token_string() const;
     Real(double _val) : Token(Tag::REAL), val(_val) {}
     virtual ~Real() = default;
 };
@@ -68,6 +72,7 @@ public:
 class Type : public Word {
 public:
     void print() const override;
+    virtual std::string token_string() const;
     Type(std::string _lexeme = "") : Word(Tag::BASIC_TYPE, _lexeme) {}
     Type(const Type &type);
     virtual ~Type() = default;

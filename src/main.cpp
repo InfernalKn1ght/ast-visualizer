@@ -1,20 +1,12 @@
-#include <iostream>
-#include "lexer.h"
-#include "parser.h"
+#include <QApplication>
+#include "app_window.h"
 
-int main(int argc, char*argv[]) {
-    // Lexer lex("input.c");
-    // std::unique_ptr<Token> tok = lex.scan();
-    // tok->print();
-    // while (!lex.lexer_eof()) {
-    //     tok = lex.scan();
-    //     tok->print();
-    // }
+int main(int argc, char *argv[]) {
+    QApplication a(argc, argv);
 
-    Parser p("input.c");
-    std::unique_ptr<Stmt> ast = std::move(p.program());
-    ast->print();
+    AppWindow window("input.c");
 
-
-    return 0;
+    window.show();
+    
+    return a.exec();
 }

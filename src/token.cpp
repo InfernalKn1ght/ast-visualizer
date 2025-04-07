@@ -1,7 +1,7 @@
 #include "token.h"
 #include <iostream>
 
-//Token::Token(const Token &token) : tag(token.tag) {}
+// Token::Token(const Token &token) : tag(token.tag) {}
 
 void Token::print() const {
     std::cout << (char)tag;
@@ -15,14 +15,14 @@ Token *Token::get_clone() const {
     return new Token(*this);
 }
 
-//Word::Word(const Word &word) : lexeme(word.lexeme) {}
+// Word::Word(const Word &word) : lexeme(word.lexeme) {}
 
 Word *Word::get_clone() const {
     return new Word(*this);
 }
 
 void Word::print() const {
-    std::cout << "[tag: " << tag << "] " <<lexeme;
+    std::cout << "[tag: " << tag << "] " << lexeme;
 }
 
 void Num::print() const {
@@ -37,4 +37,25 @@ Type::Type(const Type &type) {}
 
 void Type::print() const {
     std::cout << "[tag: " << tag << "] " << lexeme;
+}
+
+std::string Token::token_string() const {
+    char c = (char)tag;
+    return std::string{c};
+}
+
+std::string Word::token_string() const {
+    return lexeme;
+}
+
+std::string Num::token_string() const {
+    return std::to_string(val);
+}
+
+std::string Real::token_string() const {
+    return std::to_string(val);
+}
+
+std::string Type::token_string() const {
+    return lexeme;
 }
