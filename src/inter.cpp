@@ -48,7 +48,12 @@ void Set::print(const std::string &prefix, bool has_left) const {
     expr->print(prefix + (has_left ? "│   " : "    "), 0);
 }
 
-void UnaryOp::print(const std::string &prefix, bool has_left) const {}
+void UnaryOp::print(const std::string &prefix, bool has_left) const {
+    std::cout << prefix << (has_left ? "├──" : "└──");
+    op->print();
+    std::cout << std::endl;
+    expr->print(prefix + (has_left ? "│   " : "    "), 0);
+}
 
 void IfElse::print(const std::string &prefix, bool has_left) const {}
 
@@ -59,17 +64,20 @@ void Do::print(const std::string &prefix, bool has_left) const {}
 void Break::print(const std::string &prefix, bool has_left) const {}
 
 void Const::append_ast_model_node(QStandardItem *parent) const {
-    QStandardItem *next = new QStandardItem(op->token_string().c_str());
+    QString caption = QString("[Const expression] ") + op->token_string().c_str();
+    QStandardItem *next = new QStandardItem(caption);
     parent->appendRow(next);
 }
 
 void Id::append_ast_model_node(QStandardItem *parent) const {
-    QStandardItem *next = new QStandardItem(op->token_string().c_str());
+    QString caption = QString("[Id expression] ") + op->token_string().c_str();
+    QStandardItem *next = new QStandardItem(caption);
     parent->appendRow(next);
 }
 
 void BinaryOp::append_ast_model_node(QStandardItem *parent) const {
-    QStandardItem *next = new QStandardItem(op->token_string().c_str());
+    QString caption = QString("[Binary operation expression] ") + op->token_string().c_str();
+    QStandardItem *next = new QStandardItem(caption);
     left_expr->append_ast_model_node(next);
     right_expr->append_ast_model_node(next);
     parent->appendRow(next);
@@ -92,18 +100,42 @@ void If::append_ast_model_node(QStandardItem *parent) const {
 }
 
 void Set::append_ast_model_node(QStandardItem *parent) const {
-    QStandardItem *next = new QStandardItem("[Assign] =");
+    QStandardItem *next = new QStandardItem("[Assignment] =");
     id->append_ast_model_node(next);
     expr->append_ast_model_node(next);
     parent->appendRow(next);
 }
 
-void UnaryOp::append_ast_model_node(QStandardItem *parent) const {}
+void UnaryOp::append_ast_model_node(QStandardItem *parent) const {
+    QString caption = QString("[Unary operation expression] ") + op->token_string().c_str();
+    QStandardItem *next = new QStandardItem(caption);
+    expr->append_ast_model_node(next);
+    parent->appendRow(next);
+}
 
-void IfElse::append_ast_model_node(QStandardItem *parent) const {}
+void IfElse::append_ast_model_node(QStandardItem *parent) const {
+    QStandardItem *next = new QStandardItem("[Statement] if else");
+    expr->append_ast_model_node(next);
+    stmt->append_ast_model_node(next);
+    else_stmt->append_ast_model_node(next);
+    parent->appendRow(next);
+}
 
-void While::append_ast_model_node(QStandardItem *parent) const {}
+void While::append_ast_model_node(QStandardItem *parent) const {
+    QStandardItem *next = new QStandardItem("[Statement] while");
+    expr->append_ast_model_node(next);
+    stmt->append_ast_model_node(next);
+    parent->appendRow(next);
+}
 
-void Do::append_ast_model_node(QStandardItem *parent) const {}
+void Do::append_ast_model_node(QStandardItem *parent) const {
+    QStandardItem *next = new QStandardItem("[Statement] do while");
+    expr->append_ast_model_node(next);
+    stmt->append_ast_model_node(next);
+    parent->appendRow(next);
+}
 
-void Break::append_ast_model_node(QStandardItem *parent) const {}
+void Break::append_ast_model_node(QStandardItem *parent) const {
+    QStandardItem *next = new QStandardItem("[Statement] break");
+    parent->appendRow(next);
+}

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "lexer.h"
-#include <memory>
 #include <QStandardItemModel>
+#include <memory>
 
 class Node {
 public:
@@ -93,7 +93,7 @@ public:
     virtual ~If() = default;
 };
 
-class IfElse : public If { 
+class IfElse : public If {
 public:
     virtual void print(const std::string &prefix = "", bool has_left = 0) const override;
     virtual void append_ast_model_node(QStandardItem *parent) const override;
@@ -112,20 +112,21 @@ public:
     virtual ~While() = default;
 };
 
-class Do : public While { // TODO: change it
+class Do : public Stmt {
 public:
     virtual void print(const std::string &prefix = "", bool has_left = 0) const override;
     virtual void append_ast_model_node(QStandardItem *parent) const override;
-    Do(std::unique_ptr<Expr> _expr, std::unique_ptr<Stmt> _stmt) : While(std::move(_expr), std::move(_stmt)) {}
+    std::unique_ptr<Expr> expr;
+    std::unique_ptr<Stmt> stmt;
+    Do(std::unique_ptr<Expr> _expr, std::unique_ptr<Stmt> _stmt) : expr(std::move(_expr)), stmt(std::move(_stmt)) {}
     virtual ~Do() = default;
 };
 
 class Break : public Stmt {
 public:
-    std::unique_ptr<Stmt> stmt;
     virtual void append_ast_model_node(QStandardItem *parent) const override;
     virtual void print(const std::string &prefix = "", bool has_left = 0) const override;
-    Break(std::unique_ptr<Stmt> _stmt) : stmt(std::move(_stmt)) {}
+    Break() {} // TODO: add pointer to enclosing stmt
     virtual ~Break() = default;
 };
 

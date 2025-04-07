@@ -73,7 +73,7 @@ std::unique_ptr<Stmt> Parser::stmt() {
     case ';':
         next();
         return nullptr;
-    case Tag::IF:
+    case Tag::IF: // empty else block causes segmentation fault
         match_and_move(Tag::IF);
         match_and_move('(');
         stmt_expr = expr();
@@ -103,7 +103,8 @@ std::unique_ptr<Stmt> Parser::stmt() {
         return std::make_unique<Do>(std::move(stmt_expr), std::move(stmt1));
     case Tag::BREAK:
         match_and_move(Tag::BREAK);
-        return std::make_unique<Break>(nullptr);
+        match_and_move(';');
+        return std::make_unique<Break>();
     case '{':
         return block();
     default:
@@ -146,7 +147,7 @@ std::unique_ptr<Expr> Parser::term() {
 }
 
 std::unique_ptr<Expr> Parser::unary() {
-    if (next_token->tag == '-') {
+    if (next_token->tag == '-' || next_token->tag == '!') {
         std::unique_ptr<Token> tok = std::move(next_token);
         next();
         return std::make_unique<UnaryOp>(std::move(tok), std::move(factor()));

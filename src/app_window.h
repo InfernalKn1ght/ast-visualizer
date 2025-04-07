@@ -1,15 +1,18 @@
 #pragma once
 
 #include "ast_model_creator.h"
+#include "main_layout.h"
 #include <QMainWindow>
-#include <QWidget>
-#include <QStackedLayout>
-#include <QTreeView>
 
 class AppWindow : public QMainWindow {
+    Q_OBJECT
 public:
     AppWindow(const std::string &file_name);
-    // TODO: what about destructor
+
+public slots:
+    void handle_model_update();
+
 private:
-    AstModelCreator creator;
+    std::unique_ptr<AstModelCreator> creator;
+    MainLayout *main_layout;
 };

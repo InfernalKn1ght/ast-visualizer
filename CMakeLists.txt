@@ -30,6 +30,8 @@ add_executable(ast_visualizer
 	src/ast_model_creator.h
 	src/app_window.cpp
 	src/app_window.h
+	src/main_layout.cpp
+	src/main_layout.h
 )
 
 target_link_libraries(ast_visualizer Qt${QT_VERSION_MAJOR}::Widgets)

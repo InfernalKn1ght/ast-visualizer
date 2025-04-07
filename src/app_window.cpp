@@ -2,17 +2,24 @@
 
 const char *const WINDOW_TITLE = "Ast Visualizer";
 
-AppWindow::AppWindow(const std::string &file_name) : creator(file_name) {
+AppWindow::AppWindow(const std::string &file_name) : creator(std::make_unique<AstModelCreator>(file_name)) {
     setWindowTitle(WINDOW_TITLE);
-    
+
     QWidget *central_widget = new QWidget(this);
     setCentralWidget(central_widget);
 
-    QStackedLayout *layout = new QStackedLayout(central_widget);
+    main_layout = new MainLayout(central_widget);
+    main_layout->set_ast_model(creator->create_ast_model());
 
-    QTreeView *ast_view = new QTreeView(central_widget);
-    ast_view->setHeaderHidden(true);
-    ast_view->setModel(creator.create_ast_model());
+    central_widget->setLayout(main_layout);
 
-    layout->addWidget(ast_view);
+    connect(main_layout, &MainLayout::request_model_update, this, &AppWindow::handle_model_update);
+}
+
+void AppWindow::handle_model_update() {
+    if (main_layout) {
+        creator.reset();
+        creator = std::make_unique<AstModelCreator>("input.c");
+        main_layout->update_ast_model(creator->create_ast_model());
+    }
 }

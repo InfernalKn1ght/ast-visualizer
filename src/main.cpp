@@ -1,5 +1,6 @@
 #include <QApplication>
 #include "app_window.h"
+#include "parser.h"
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
@@ -7,6 +8,10 @@ int main(int argc, char *argv[]) {
     AppWindow window("input.c");
 
     window.show();
-    
+
     return a.exec();
+    // Parser p("input.c");
+    // std::unique_ptr<Node> ast = p.program();
+    // ast->print();
+    // return 0;
 }
