@@ -1,8 +1,6 @@
 #include "token.h"
 #include <iostream>
 
-// Token::Token(const Token &token) : tag(token.tag) {}
-
 void Token::print() const {
     std::cout << (char)tag;
 }
@@ -14,8 +12,6 @@ std::unique_ptr<Token> Token::clone() const {
 Token *Token::get_clone() const {
     return new Token(*this);
 }
-
-// Word::Word(const Word &word) : lexeme(word.lexeme) {}
 
 Word *Word::get_clone() const {
     return new Word(*this);

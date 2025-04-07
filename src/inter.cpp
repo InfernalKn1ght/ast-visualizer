@@ -7,7 +7,29 @@ Expr::Expr(std::unique_ptr<Token> _op) : op(std::move(_op)) {}
 
 Expr::Expr(const Expr &expr) : op(expr.op->clone()) {}
 
+Const::Const(std::unique_ptr<Token> _const_token) : Expr(std::move(_const_token)) {}
+
+Id::Id(std::unique_ptr<Token> lexeme) : Expr(std::move(lexeme)) {}
+
 Id::Id(const Id &id) : Expr(id) {}
+
+Op::Op(std::unique_ptr<Token> _op) : Expr(std::move(_op)) {}
+
+BinaryOp::BinaryOp(std::unique_ptr<Token> _op, std::unique_ptr<Expr> _left_expr, std::unique_ptr<Expr> _right_expr) : Op(std::move(_op)), left_expr(std::move(_left_expr)), right_expr(std::move(_right_expr)) {}
+
+UnaryOp::UnaryOp(std::unique_ptr<Token> _op, std::unique_ptr<Expr> _expr) : Op(std::move(_op)), expr(std::move(_expr)) {}
+
+Stmts::Stmts(std::unique_ptr<Stmt> _stmt, std::unique_ptr<Stmt> _next_stmt) : stmt(std::move(_stmt)), next_stmt(std::move(_next_stmt)) {}
+
+If::If(std::unique_ptr<Expr> _expr, std::unique_ptr<Stmt> _stmt) : expr(std::move(_expr)), stmt(std::move(_stmt)) {}
+
+IfElse::IfElse(std::unique_ptr<Expr> _expr, std::unique_ptr<Stmt> _if_stmt, std::unique_ptr<Stmt> _else_stmt) : If(std::move(_expr), std::move(_if_stmt)), else_stmt(std::move(_else_stmt)) {}
+
+While::While(std::unique_ptr<Expr> _expr, std::unique_ptr<Stmt> _stmt) : expr(std::move(_expr)), stmt(std::move(_stmt)) {}
+
+Do::Do(std::unique_ptr<Expr> _expr, std::unique_ptr<Stmt> _stmt) : expr(std::move(_expr)), stmt(std::move(_stmt)) {}
+
+Set::Set(std::unique_ptr<Id> _id, std::unique_ptr<Expr> _expr) : id(std::move(_id)), expr(std::move(_expr)) {}
 
 void Const::print(const std::string &prefix, bool has_left) const {
     std::cout << prefix << (has_left ? "├──" : "└──");

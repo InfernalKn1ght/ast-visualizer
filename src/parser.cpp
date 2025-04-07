@@ -118,7 +118,7 @@ std::unique_ptr<Stmt> Parser::assign() {
     match_and_move(Tag::ID); // TODO: rewrite this mess
     std::unique_ptr<Id> id = top_table->get(id_lexeme);
     if (next_token->tag == '=') { // TODO: add id null ckech
-        next(); // TODO: figure out why not match_and_move('=')
+        next();                   // TODO: figure out why not match_and_move('=')
         set = std::make_unique<Set>(std::move(id), std::move(expr()));
     }
     match_and_move(';');

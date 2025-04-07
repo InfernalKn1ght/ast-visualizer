@@ -5,7 +5,7 @@
 #include <memory>
 #include <unordered_map>
 
-class Lexer { // TODO: написать комментарии
+class Lexer {
 public:
     unsigned int line = 0;
     std::unique_ptr<Token> scan();

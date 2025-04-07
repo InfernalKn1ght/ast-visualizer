@@ -10,8 +10,4 @@ int main(int argc, char *argv[]) {
     window.show();
 
     return a.exec();
-    // Parser p("input.c");
-    // std::unique_ptr<Node> ast = p.program();
-    // ast->print();
-    // return 0;
 }

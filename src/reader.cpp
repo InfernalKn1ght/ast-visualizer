@@ -18,6 +18,6 @@ void Reader::read_symbol(char &peek) {
     _input_text.get(peek);
 }
 
-bool Reader::reader_eof() {
+bool Reader::reader_eof() const {
     return _input_text.eof();
 }

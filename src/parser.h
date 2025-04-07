@@ -5,14 +5,6 @@
 #include "symbol_table.h"
 
 class Parser {
-private:
-    Lexer lex;
-    std::unique_ptr<Token> next_token;
-    std::shared_ptr<STable> top_table;
-    void next();
-    void match(unsigned int tok);
-    void match_and_move(unsigned int tok);
-
 public:
     Parser(const std::string &file_name);
     std::unique_ptr<Stmt> program();
@@ -26,4 +18,12 @@ public:
     std::unique_ptr<Expr> term();
     std::unique_ptr<Expr> unary();
     std::unique_ptr<Expr> factor();
+
+private:
+    Lexer lex;
+    std::unique_ptr<Token> next_token;
+    std::shared_ptr<STable> top_table;
+    void next();
+    void match(unsigned int tok);
+    void match_and_move(unsigned int tok);
 };
