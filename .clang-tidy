@@ -1,0 +1,10 @@
+Checks: >
+    modernize-*,
+    bugprone-*,
+    performance-*
+    portability-*,
+    readability-*,
+    cppcoreguidelines-*,
+    misc-*
+WarningsAsErrors: '*'
+HeaderFilterRegex: '.*'
