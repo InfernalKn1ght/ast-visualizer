@@ -1,57 +1,47 @@
 #include "token.h"
+
 #include <iostream>
 
-void Token::print() const {
-    std::cout << (char)tag;
-}
+Token::Token(unsigned int tag) : tag_(tag) {}
+
+void Token::print() const { std::cout << (char)tag_; }
 
 std::unique_ptr<Token> Token::clone() const {
     return std::unique_ptr<Token>(get_clone());
 }
 
-Token *Token::get_clone() const {
-    return new Token(*this);
-}
+Token *Token::get_clone() const { return new Token(*this); }
 
-Word *Word::get_clone() const {
-    return new Word(*this);
-}
+Word::Word(unsigned int tag, std::string lexeme)
+    : Token(tag), lexeme_(lexeme) {}
 
-void Word::print() const {
-    std::cout << "[tag: " << tag << "] " << lexeme;
-}
+Word *Word::get_clone() const { return new Word(*this); }
 
-void Num::print() const {
-    std::cout << "[tag: " << tag << "] " << val;
-}
+void Word::print() const { std::cout << "[tag: " << tag_ << "] " << lexeme_; }
 
-void Real::print() const {
-    std::cout << "[tag: " << tag << "] " << val;
-}
+Num::Num(int val) : Token(Tag::NUM), val_(val) {}
+
+void Num::print() const { std::cout << "[tag: " << tag_ << "] " << val_; }
+
+Real::Real(double val) : Token(Tag::REAL), val_(val) {}
+
+void Real::print() const { std::cout << "[tag: " << tag_ << "] " << val_; }
 
 Type::Type(const Type &type) {}
 
-void Type::print() const {
-    std::cout << "[tag: " << tag << "] " << lexeme;
-}
+void Type::print() const { std::cout << "[tag: " << tag_ << "] " << lexeme_; }
 
 std::string Token::token_string() const {
-    char c = (char)tag;
+    const char c = (char)tag_;
     return std::string{c};
 }
 
-std::string Word::token_string() const {
-    return lexeme;
-}
+std::string Word::token_string() const { return lexeme_; }
 
-std::string Num::token_string() const {
-    return std::to_string(val);
-}
+std::string Num::token_string() const { return std::to_string(val_); }
 
-std::string Real::token_string() const {
-    return std::to_string(val);
-}
+std::string Real::token_string() const { return std::to_string(val_); }
 
-std::string Type::token_string() const {
-    return lexeme;
-}
+std::string Type::token_string() const { return lexeme_; }
+
+Type::Type(std::string lexeme) : Word(Tag::BASIC_TYPE, lexeme) {}

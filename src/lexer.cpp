@@ -1,30 +1,25 @@
 #include "lexer.h"
-#include <iostream>
 
-bool Lexer::lexer_eof() {
-    return _reader.reader_eof();
-}
+bool Lexer::lexer_eof() { return reader_.reader_eof(); }
 
-void Lexer::read_peek() {
-    _reader.read_symbol(_peek);
-}
+void Lexer::read_peek() { reader_.read_symbol(peek_); }
 
 bool Lexer::next_char(const char &c) {
     read_peek();
-    if (c != _peek) {
+    if (c != peek_) {
         return 0;
     }
-    _peek = ' ';
+    peek_ = ' ';
     return 1;
 }
 
 void Lexer::skip_whitespace() {
     while (!lexer_eof()) {
-        if (_peek != ' ' && _peek != '\t' && _peek != '\n') {
+        if (peek_ != ' ' && peek_ != '\t' && peek_ != '\n') {
             break;
         }
-        if (_peek == '\n') {
-            ++line;
+        if (peek_ == '\n') {
+            ++line_;
         }
         read_peek();
     }
@@ -32,16 +27,16 @@ void Lexer::skip_whitespace() {
 
 void Lexer::acc_number(std::string &acc) {
     do {
-        acc.push_back(_peek);
+        acc.push_back(peek_);
         read_peek();
-    } while (!lexer_eof() && std::isdigit(_peek));
+    } while (!lexer_eof() && std::isdigit(peek_));
 }
 
 void Lexer::acc_word(std::string &acc) {
     do {
-        acc.push_back(_peek);
+        acc.push_back(peek_);
         read_peek();
-    } while (!lexer_eof() && is_alpha_or_digit(_peek));
+    } while (!lexer_eof() && is_alpha_or_digit(peek_));
 }
 
 bool Lexer::is_alpha_or_digit(char &c) {
@@ -51,7 +46,7 @@ bool Lexer::is_alpha_or_digit(char &c) {
 std::unique_ptr<Token> Lexer::make_const_token() {
     std::string acc;
     acc_number(acc);
-    if (_peek == '.') {
+    if (peek_ == '.') {
         acc_number(acc);
         return std::make_unique<Real>(std::stod(acc));
     }
@@ -61,22 +56,22 @@ std::unique_ptr<Token> Lexer::make_const_token() {
 std::unique_ptr<Token> Lexer::make_word_token() {
     std::string acc;
     acc_word(acc);
-    if (_word_table.contains(acc)) {
-        return std::make_unique<Word>(_word_table[acc]);
+    if (word_table_.contains(acc)) {
+        return std::make_unique<Word>(word_table_[acc]);
     }
     return std::make_unique<Word>(Tag::ID, acc);
 }
 
 std::unique_ptr<Token> Lexer::make_char_token() {
-    char chtag = _peek;
-    _peek = ' ';
+    char chtag = peek_;
+    peek_ = ' ';
     return std::make_unique<Token>(chtag);
 }
 
 std::unique_ptr<Token> Lexer::make_token() {
-    if (std::isdigit(_peek)) {
+    if (std::isdigit(peek_)) {
         return make_const_token();
-    } else if (std::isalpha(_peek)) {
+    } else if (std::isalpha(peek_)) {
         return make_word_token();
     } else {
         return make_char_token();
@@ -86,43 +81,41 @@ std::unique_ptr<Token> Lexer::make_token() {
 std::unique_ptr<Token> Lexer::scan() {
     skip_whitespace();
 
-    switch (_peek) {
-    case '&':
-        if (next_char('&')) {
-            return std::make_unique<Word>(_word_table["&&"]);
-        }
-        return std::make_unique<Token>('&');
-    case '|':
-        if (next_char('|')) {
-            return std::make_unique<Word>(_word_table["||"]);
-        }
-        return std::make_unique<Token>('|');
-    case '<':
-        if (next_char('=')) {
-            return std::make_unique<Word>(_word_table["<="]);
-        }
-        return std::make_unique<Token>('<');
-    case '>':
-        if (next_char('=')) {
-            return std::make_unique<Word>(_word_table[">="]);
-        }
-        return std::make_unique<Token>('>');
-    case '=':
-        if (next_char('=')) {
-            return std::make_unique<Word>(_word_table["=="]);
-        }
-        return std::make_unique<Token>('=');
+    switch (peek_) {
+        case '&':
+            if (next_char('&')) {
+                return std::make_unique<Word>(word_table_["&&"]);
+            }
+            return std::make_unique<Token>('&');
+        case '|':
+            if (next_char('|')) {
+                return std::make_unique<Word>(word_table_["||"]);
+            }
+            return std::make_unique<Token>('|');
+        case '<':
+            if (next_char('=')) {
+                return std::make_unique<Word>(word_table_["<="]);
+            }
+            return std::make_unique<Token>('<');
+        case '>':
+            if (next_char('=')) {
+                return std::make_unique<Word>(word_table_[">="]);
+            }
+            return std::make_unique<Token>('>');
+        case '=':
+            if (next_char('=')) {
+                return std::make_unique<Word>(word_table_["=="]);
+            }
+            return std::make_unique<Token>('=');
 
-    default:
-        return make_token();
+        default:
+            return make_token();
     }
 }
 
-void Lexer::reserve(Word word) {
-    _word_table.emplace(word.lexeme, word);
-}
+void Lexer::reserve(Word word) { word_table_.emplace(word.lexeme_, word); }
 
-Lexer::Lexer(const std::string &file_name) : _reader(file_name) {
+Lexer::Lexer(const std::string &file_name) : reader_(file_name) {
     reserve(Word(Tag::AND, "&&"));
     reserve(Word(Tag::OR, "||"));
     reserve(Word(Tag::LE, "<="));
