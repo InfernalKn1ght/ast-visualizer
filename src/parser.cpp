@@ -24,6 +24,9 @@ void Parser::match_and_move(unsigned int tok) {
 
 std::unique_ptr<Stmt> Parser::program() {  // TODO: add decls check before first
                                            // block (global variables)
+    if (next_token_->tag_ == 32) {
+        return nullptr;
+    }
     std::unique_ptr<Stmt> stmt = block();
     return stmt;
 }
