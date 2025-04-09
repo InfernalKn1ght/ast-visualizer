@@ -17,8 +17,9 @@ public:
     /**
      * @brief Constructs a MainLayout with optional parent widget.
      * @param parent The parent widget (default is nullptr).
+     * @param file_name The name of the input file (default is empty string).
      */
-    MainLayout(QWidget *parent = nullptr);
+    MainLayout(QWidget *parent = nullptr, const std::string &file_name = "");
 
     /**
      * @brief Sets the AST model for the tree view.
@@ -50,13 +51,14 @@ private slots:
     void save_to_file();
 
     /**
-     * @brief Loads content from "input.c" file into the text editor.
+     * @brief Loads content from file into the text editor.
      */
     void load_from_file();
 
 private:
-    QTextEdit *text_field_;  ///< Text editor widget for code input.
-    QTreeView *ast_view_;    ///< Tree view widget for AST visualization.
+    QTextEdit *text_field_;        ///< Text editor widget for code input.
+    QTreeView *ast_view_;          ///< Tree view widget for AST visualization.
+    const std::string file_name_;  ///< Name of the input file.
 
     /**
      * @brief Sets up the user interface components.

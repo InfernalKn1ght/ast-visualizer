@@ -4,7 +4,8 @@
 #include <QMessageBox>
 #include <QTextStream>
 
-MainLayout::MainLayout(QWidget *parent) : QHBoxLayout(parent) {
+MainLayout::MainLayout(QWidget *parent, const std::string &file_name)
+    : QHBoxLayout(parent), file_name_(file_name) {
     setup_ui();
     load_initial_content();
 }
@@ -39,7 +40,7 @@ void MainLayout::set_ast_model(QAbstractItemModel *model) {
 }
 
 void MainLayout::load_initial_content() {
-    QFile file("input.c");
+    QFile file(file_name_.c_str());
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QTextStream in(&file);
         text_field_->setPlainText(in.readAll());
@@ -48,7 +49,7 @@ void MainLayout::load_initial_content() {
 }
 
 void MainLayout::save_to_file() {
-    QFile file("input.c");
+    QFile file(file_name_.c_str());
     if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         QTextStream out(&file);
         out << text_field_->toPlainText();
@@ -62,7 +63,7 @@ void MainLayout::save_to_file() {
 }
 
 void MainLayout::load_from_file() {
-    QFile file("input.c");
+    QFile file(file_name_.c_str());
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QTextStream in(&file);
         text_field_->setPlainText(in.readAll());
