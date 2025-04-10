@@ -32,7 +32,8 @@ enum Tag {
  */
 class Token {
 public:
-    unsigned int tag_ = 0;  ///< Token type identifier
+    virtual unsigned int get_tag() const;
+    virtual void set_tag(unsigned int tag);
 
     /**
      * @brief Prints the token to stdout.
@@ -65,6 +66,9 @@ protected:
      * @return Pointer to new Token instance
      */
     virtual Token *get_clone() const;
+
+private:
+    unsigned int tag_ = 0;  ///< Token type identifier
 };
 
 /**
@@ -72,7 +76,8 @@ protected:
  */
 class Word : public Token {
 public:
-    std::string lexeme_ = "";  ///< The actual string value of the word
+    virtual std::string get_lexeme() const;
+    virtual void set_lexeme(std::string &lexeme);
 
     void print() const override;
     virtual std::string token_string() const override;
@@ -88,6 +93,9 @@ public:
 
 protected:
     virtual Word *get_clone() const override;
+
+private:
+    std::string lexeme_;
 };
 
 /**
@@ -95,8 +103,8 @@ protected:
  */
 class Num : public Token {
 public:
-    int val_ = 0;  ///< Numeric value
-
+    virtual int get_val() const;
+    virtual void set_val(int val);
     void print() const override;
     virtual std::string token_string() const override;
 
@@ -107,6 +115,9 @@ public:
     Num(int val);
 
     virtual ~Num() = default;
+
+private:
+    int val_ = 0;  ///< Numeric value
 };
 
 /**
@@ -114,7 +125,8 @@ public:
  */
 class Real : public Token {
 public:
-    double val_ = 0.0;  ///< Numeric value
+    virtual double get_val() const;
+    virtual void set_val(double val);
 
     void print() const override;
     virtual std::string token_string() const override;
@@ -126,6 +138,9 @@ public:
     Real(double val);
 
     virtual ~Real() = default;
+
+private:
+    double val_ = 0.0;  ///< Numeric value
 };
 
 /**

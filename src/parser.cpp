@@ -10,7 +10,7 @@ Parser::Parser(const std::string &file_name) : lex_(file_name) {
 void Parser::next() { next_token_ = lex_.scan(); }
 
 void Parser::match(unsigned int tok) {
-    if (tok == next_token_->tag_) {
+    if (tok == next_token_->get_tag()) {
         std::cout << "token is correct" << std::endl;
         return;
     }
@@ -24,7 +24,7 @@ void Parser::match_and_move(unsigned int tok) {
 
 std::unique_ptr<Stmt> Parser::program() {  // TODO: add decls check before first
                                            // block (global variables)
-    if (next_token_->tag_ == 32) {
+    if (next_token_->get_tag() == 32) {
         return nullptr;
     }
     std::unique_ptr<Stmt> stmt = block();
@@ -43,10 +43,10 @@ std::unique_ptr<Stmt> Parser::block() {
 }
 
 void Parser::decls() {
-    while (next_token_->tag_ == Tag::BASIC_TYPE) {
+    while (next_token_->get_tag() == Tag::BASIC_TYPE) {
         auto p = type();
         match(Tag::ID);
-        std::string id_lexeme = static_cast<Word *>(next_token_.get())->lexeme_;
+        std::string id_lexeme = static_cast<Word *>(next_token_.get())->get_lexeme();
         Id id(std::move(next_token_));
         next();
         match_and_move(';');
@@ -56,12 +56,12 @@ void Parser::decls() {
 
 std::unique_ptr<Type> Parser::type() {
     match_and_move(Tag::BASIC_TYPE);
-    std::string lexeme = static_cast<Type *>(next_token_.get())->lexeme_;
+    std::string lexeme = static_cast<Type *>(next_token_.get())->get_lexeme();
     return std::make_unique<Type>(lexeme);
 }
 
 std::unique_ptr<Stmt> Parser::stmts() {
-    if (next_token_->tag_ == '}') {
+    if (next_token_->get_tag() == '}') {
         return nullptr;
     }
     std::unique_ptr<Stmt> stmt1 = stmt();
@@ -72,7 +72,7 @@ std::unique_ptr<Stmt> Parser::stmts() {
 std::unique_ptr<Stmt> Parser::stmt() {
     std::unique_ptr<Expr> stmt_expr;
     std::unique_ptr<Stmt> stmt1, stmt2;
-    switch (next_token_->tag_) {
+    switch (next_token_->get_tag()) {
         case ';':
             next();
             return nullptr;
@@ -82,7 +82,7 @@ std::unique_ptr<Stmt> Parser::stmt() {
             stmt_expr = expr();
             match_and_move(')');
             stmt1 = stmt();
-            if (next_token_->tag_ != Tag::ELSE) {
+            if (next_token_->get_tag() != Tag::ELSE) {
                 return std::make_unique<If>(std::move(stmt_expr),
                                             std::move(stmt1));
             }
@@ -120,10 +120,10 @@ std::unique_ptr<Stmt> Parser::stmt() {
 
 std::unique_ptr<Stmt> Parser::assign() {
     std::unique_ptr<Stmt> set;  // TODO: match first, get lexeme after
-    std::string id_lexeme = static_cast<Word *>(next_token_.get())->lexeme_;
+    std::string id_lexeme = static_cast<Word *>(next_token_.get())->get_lexeme();
     match_and_move(Tag::ID);  // TODO: rewrite this mess
     std::unique_ptr<Id> id = top_table_->get(id_lexeme);
-    if (next_token_->tag_ == '=') {  // TODO: add id null ckech
+    if (next_token_->get_tag() == '=') {  // TODO: add id null ckech
         next();  // TODO: figure out why not match_and_move('=')
         set = std::make_unique<Set>(std::move(id), std::move(expr()));
     }
@@ -134,7 +134,7 @@ std::unique_ptr<Stmt> Parser::assign() {
 
 std::unique_ptr<Expr> Parser::expr() {
     std::unique_ptr<Expr> exp = term();
-    while (next_token_->tag_ == '+' || next_token_->tag_ == '-') {
+    while (next_token_->get_tag() == '+' || next_token_->get_tag() == '-') {
         std::unique_ptr<Token> tok = std::move(next_token_);
         next();
         exp = std::make_unique<BinaryOp>(std::move(tok), std::move(exp),
@@ -145,7 +145,7 @@ std::unique_ptr<Expr> Parser::expr() {
 
 std::unique_ptr<Expr> Parser::term() {
     std::unique_ptr<Expr> exp = unary();
-    while (next_token_->tag_ == '*' || next_token_->tag_ == '/') {
+    while (next_token_->get_tag() == '*' || next_token_->get_tag() == '/') {
         std::unique_ptr<Token> tok = std::move(next_token_);
         next();
         exp = std::make_unique<BinaryOp>(std::move(tok), std::move(exp),
@@ -155,7 +155,7 @@ std::unique_ptr<Expr> Parser::term() {
 }
 
 std::unique_ptr<Expr> Parser::unary() {
-    if (next_token_->tag_ == '-' || next_token_->tag_ == '!') {
+    if (next_token_->get_tag() == '-' || next_token_->get_tag() == '!') {
         std::unique_ptr<Token> tok = std::move(next_token_);
         next();
         return std::make_unique<UnaryOp>(std::move(tok), std::move(factor()));
@@ -167,7 +167,7 @@ std::unique_ptr<Expr> Parser::unary() {
 std::unique_ptr<Expr> Parser::factor() {
     std::unique_ptr<Expr> exp = nullptr;
     std::string lexeme;
-    switch (next_token_->tag_) {
+    switch (next_token_->get_tag()) {
         case '(':
             next();
             exp = expr();
@@ -182,7 +182,7 @@ std::unique_ptr<Expr> Parser::factor() {
             next();
             return std::move(exp);
         case Tag::ID:
-            lexeme = static_cast<Word *>(next_token_.get())->lexeme_;
+            lexeme = static_cast<Word *>(next_token_.get())->get_lexeme();
             next();
             exp = top_table_->get(lexeme);
             if (exp == nullptr) {

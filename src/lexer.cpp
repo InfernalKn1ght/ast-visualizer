@@ -113,7 +113,7 @@ std::unique_ptr<Token> Lexer::scan() {
     }
 }
 
-void Lexer::reserve(Word word) { word_table_.emplace(word.lexeme_, word); }
+void Lexer::reserve(Word word) { word_table_.emplace(word.get_lexeme(), word); }
 
 Lexer::Lexer(const std::string &file_name) : reader_(file_name) {
     reserve(Word(Tag::AND, "&&"));
