@@ -1,6 +1,9 @@
 #include "parser.h"
 
 #include <iostream>
+#include <memory>
+
+#include "token.h"
 
 Parser::Parser(const std::string &file_name) : lex_(file_name) {
     top_table_ = std::make_shared<STable>();
@@ -44,20 +47,39 @@ std::unique_ptr<Stmt> Parser::block() {
 
 void Parser::decls() {
     while (next_token_->get_tag() == Tag::BASIC_TYPE) {
-        auto p = type();
+        auto t = type();
         match(Tag::ID);
-        std::string id_lexeme = static_cast<Word *>(next_token_.get())->get_lexeme();
+        const auto id_lexeme =
+            static_cast<Word *>(next_token_.get())->get_lexeme();
         Id id(std::move(next_token_));
         next();
+        if (next_token_->get_tag() == '[') {
+            t = dims(std::move(t));
+        }
         match_and_move(';');
         top_table_->put(id_lexeme, id);
     }
 }
 
 std::unique_ptr<Type> Parser::type() {
-    match_and_move(Tag::BASIC_TYPE);
-    std::string lexeme = static_cast<Type *>(next_token_.get())->get_lexeme();
-    return std::make_unique<Type>(lexeme);
+    match(Tag::BASIC_TYPE);
+    const auto type_lexeme = static_cast<Type *>(next_token_.get())
+                                 ->get_lexeme();  // TODO: dynamic_cast
+    auto t = std::make_unique<Type>(Tag::BASIC_TYPE, type_lexeme);
+    next();
+    return t;
+}
+
+std::unique_ptr<Type> Parser::dims(std::unique_ptr<Type> t) {
+    match_and_move('[');
+    const auto array_size = static_cast<Num *>(next_token_.get())
+                                ->get_val();  // TODO: check for negative values
+    next();
+    match_and_move(']');
+    if (next_token_->get_tag() == '[') {
+        t = dims(std::move(t));
+    }
+    return std::make_unique<Array>(std::move(t), array_size);
 }
 
 std::unique_ptr<Stmt> Parser::stmts() {
@@ -120,7 +142,8 @@ std::unique_ptr<Stmt> Parser::stmt() {
 
 std::unique_ptr<Stmt> Parser::assign() {
     std::unique_ptr<Stmt> set;  // TODO: match first, get lexeme after
-    std::string id_lexeme = static_cast<Word *>(next_token_.get())->get_lexeme();
+    std::string id_lexeme =
+        static_cast<Word *>(next_token_.get())->get_lexeme();
     match_and_move(Tag::ID);  // TODO: rewrite this mess
     std::unique_ptr<Id> id = top_table_->get(id_lexeme);
     if (next_token_->get_tag() == '=') {  // TODO: add id null ckech

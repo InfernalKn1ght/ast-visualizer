@@ -31,6 +31,8 @@ public:
      */
     Reader(const std::string &file_name);
 
+    Reader(const Reader &r);
+
     /**
      * @brief Destroys the Reader object and closes the file if it is open.
      */

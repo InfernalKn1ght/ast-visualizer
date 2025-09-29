@@ -25,6 +25,7 @@ enum Tag {
     ELSE,         ///< 'else' keyword
     BREAK,        ///< 'break' keyword
     BASIC_TYPE,   ///< Basic type keyword
+    INDEX,
 };
 
 /**
@@ -148,14 +149,14 @@ private:
  */
 class Type : public Word {
 public:
-    void print() const override;
+    virtual void print() const override;
     virtual std::string token_string() const override;
 
     /**
      * @brief Constructs a Type with optional lexeme.
      * @param lexeme Type name (default empty)
      */
-    Type(std::string lexeme = "");
+    Type(unsigned int tag = Tag::BASIC_TYPE, std::string lexeme = "");
 
     /**
      * @brief Copy constructor for Type.
@@ -164,4 +165,23 @@ public:
     Type(const Type &type);
 
     virtual ~Type() = default;
+};
+
+class Array : public Type {
+public:
+    unsigned int get_size() const;
+    void set_size(const unsigned int size);
+
+    Type* get_type() const;
+    void set_type(std::unique_ptr<Type> array_type);
+
+    Array(std::unique_ptr<Type> array_type, unsigned int size);
+
+    Array(const Array &array);
+
+    virtual ~Array() = default;
+
+private:
+    std::unique_ptr<Type> array_type_{};
+    unsigned int size_ = 1;
 };

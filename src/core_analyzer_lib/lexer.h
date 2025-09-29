@@ -34,6 +34,8 @@ public:
      */
     Lexer(const std::string &file_name);
 
+    Lexer(const Lexer &l);
+
     ~Lexer() = default;
 
 private:

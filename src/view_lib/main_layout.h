@@ -28,37 +28,24 @@ public:
     void set_ast_model(QAbstractItemModel *model);
 
     /**
-     * @brief Loads initial content from "input.c" file into the text editor.
-     */
-    void load_initial_content();
-
-    /**
      * @brief Updates the AST model, deleting the old model if it exists.
      * @param model The new AST item model.
      */
     void update_ast_model(QAbstractItemModel *model);
 
+    QString get_text_content() const;
+    void set_text_content(const QString &content);
+
 signals:
-    /**
-     * @brief Signal emitted when a model update is requested (after saving).
-     */
-    void request_model_update();
 
-private slots:
-    /**
-     * @brief Saves the text editor content to file.
-     */
-    void save_to_file();
+    void request_ast_update();
 
-    /**
-     * @brief Loads content from file into the text editor.
-     */
-    void load_from_file();
+    void save_requested();
+    void load_requested();
 
 private:
-    QTextEdit *text_field_;        ///< Text editor widget for code input.
-    QTreeView *ast_view_;          ///< Tree view widget for AST visualization.
-    const std::string file_name_;  ///< Name of the input file.
+    QTextEdit *text_field_;  ///< Text editor widget for code input.
+    QTreeView *ast_view_;    ///< Tree view widget for AST visualization.
 
     /**
      * @brief Sets up the user interface components.

@@ -1,5 +1,7 @@
 #include "lexer.h"
 
+#include "token.h"
+
 bool Lexer::lexer_eof() { return reader_.reader_eof(); }
 
 void Lexer::read_peek() { reader_.read_symbol(peek_); }
@@ -127,7 +129,9 @@ Lexer::Lexer(const std::string &file_name) : reader_(file_name) {
     reserve(Word(Tag::IF, "if"));
     reserve(Word(Tag::ELSE, "else"));
     reserve(Word(Tag::BREAK, "break"));
-    reserve(Type("int"));
-    reserve(Type("float"));
-    reserve(Type("char"));
+    reserve(Type(Tag::BASIC_TYPE, "int"));
+    reserve(Type(Tag::BASIC_TYPE, "float"));
+    reserve(Type(Tag::BASIC_TYPE, "char"));
 }
+
+Lexer::Lexer(const Lexer &l) : reader_(l.reader_) {}

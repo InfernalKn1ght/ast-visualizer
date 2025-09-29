@@ -9,6 +9,8 @@ Reader::Reader(const std::string &file_name) {
     }
 }
 
+Reader::Reader(const Reader &r) {}
+
 Reader::~Reader() {
     if (input_text_.is_open()) {
         input_text_.close();

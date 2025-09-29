@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "inter.h"
 #include "lexer.h"
 #include "symbol_table.h"
@@ -17,7 +19,7 @@ public:
      * @brief Constructs a Parser for the given input file.
      * @param file_name Path to the source file to parse.
      */
-    Parser(const std::string &file_name);
+    Parser(const std::string& file_name);
 
     /**
      * @brief Parses the entire program.
@@ -47,6 +49,8 @@ public:
      * @return Type object representing the parsed type.
      */
     std::unique_ptr<Type> type();
+
+    std::unique_ptr<Type> dims(std::unique_ptr<Type> t);
 
     /**
      * @brief Parses a single statement.

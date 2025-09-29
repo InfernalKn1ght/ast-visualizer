@@ -52,7 +52,7 @@ void Type::print() const {
 }
 
 std::string Token::token_string() const {
-    const char c = (char)tag_;
+    const auto c = static_cast<char>(tag_);
     return std::string{c};
 }
 
@@ -64,4 +64,17 @@ std::string Real::token_string() const { return std::to_string(val_); }
 
 std::string Type::token_string() const { return get_lexeme(); }
 
-Type::Type(std::string lexeme) : Word(Tag::BASIC_TYPE, lexeme) {}
+Type::Type(unsigned int tag, std::string lexeme) : Word(tag, lexeme) {}
+
+Type* Array::get_type() const { return array_type_.get(); }
+
+void Array::set_type(std::unique_ptr<Type> array_type) { array_type_ = std::move(array_type); }
+
+unsigned int Array::get_size() const { return size_; }
+
+void Array::set_size(unsigned int size) { size_ = size; }
+
+Array::Array(std::unique_ptr<Type> array_type, unsigned int size)
+    : Type(Tag::INDEX, "[]"), array_type_(std::move(array_type)), size_(size) {}
+
+Array::Array(const Array &array) {}

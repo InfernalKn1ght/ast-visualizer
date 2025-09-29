@@ -1,8 +1,5 @@
 #pragma once
 
-#include <QStandardItemModel>
-#include <memory>
-
 #include "token.h"
 
 /**
@@ -24,12 +21,6 @@ public:
                        bool has_left = 0) const = 0;
 
     /**
-     * @brief Adds the node and its children to a Qt model for visualization.
-     * @param parent Parent item in the Qt model
-     */
-    virtual void append_ast_model_node(QStandardItem *parent) const = 0;
-
-    /**
      * @brief Constructs a Node with optional line number.
      * @param lexline Source code line number (default 0)
      */
@@ -49,8 +40,6 @@ public:
 
     virtual void print(const std::string &prefix,
                        bool has_left) const override = 0;
-    virtual void append_ast_model_node(
-        QStandardItem *parent) const override = 0;
 
     /**
      * @brief Constructs an Expr with optional operator token.
@@ -74,7 +63,6 @@ class Const : public Expr {
 public:
     virtual void print(const std::string &prefix = "",
                        bool has_left = 0) const override;
-    virtual void append_ast_model_node(QStandardItem *parent) const override;
 
     /**
      * @brief Constructs a Const with optional token.
@@ -92,7 +80,6 @@ class Id : public Expr {
 public:
     virtual void print(const std::string &prefix = "",
                        bool has_left = 0) const override;
-    virtual void append_ast_model_node(QStandardItem *parent) const override;
 
     /**
      * @brief Constructs an Id with optional lexeme token.
@@ -116,8 +103,6 @@ class Op : public Expr {
 public:
     virtual void print(const std::string &prefix = "",
                        bool has_left = 0) const override = 0;
-    virtual void append_ast_model_node(
-        QStandardItem *parent) const override = 0;
 
     /**
      * @brief Constructs an Op with operator token.
@@ -135,7 +120,6 @@ class BinaryOp : public Op {
 public:
     virtual void print(const std::string &prefix = "",
                        bool has_left = 0) const override;
-    virtual void append_ast_model_node(QStandardItem *parent) const override;
 
     std::unique_ptr<Expr> left_expr_;   ///< Left operand expression
     std::unique_ptr<Expr> right_expr_;  ///< Right operand expression
@@ -157,7 +141,6 @@ class UnaryOp : public Op {
 public:
     virtual void print(const std::string &prefix = "",
                        bool has_left = 0) const override;
-    virtual void append_ast_model_node(QStandardItem *parent) const override;
 
     std::unique_ptr<Expr> expr_;  ///< Operand expression
 
@@ -178,8 +161,6 @@ class Stmt : public Node {
 public:
     virtual void print(const std::string &prefix = "",
                        bool has_left = 0) const override = 0;
-    virtual void append_ast_model_node(
-        QStandardItem *parent) const override = 0;
 
     Stmt() {}
     virtual ~Stmt() {}
@@ -192,7 +173,6 @@ class Stmts : public Stmt {
 public:
     virtual void print(const std::string &prefix = "",
                        bool has_left = 0) const override;
-    virtual void append_ast_model_node(QStandardItem *parent) const override;
 
     std::unique_ptr<Stmt> stmt_;       ///< First statement in sequence
     std::unique_ptr<Stmt> next_stmt_;  ///< Subsequent statements
@@ -214,7 +194,6 @@ class If : public Stmt {
 public:
     virtual void print(const std::string &prefix = "",
                        bool has_left = 0) const override;
-    virtual void append_ast_model_node(QStandardItem *parent) const override;
 
     std::unique_ptr<Expr> expr_;  ///< Condition expression
     std::unique_ptr<Stmt> stmt_;  ///< Then branch statement
@@ -236,7 +215,6 @@ class IfElse : public If {
 public:
     virtual void print(const std::string &prefix = "",
                        bool has_left = 0) const override;
-    virtual void append_ast_model_node(QStandardItem *parent) const override;
 
     std::unique_ptr<Stmt> else_stmt_;  ///< Else branch statement
 
@@ -259,7 +237,6 @@ class While : public Stmt {
 public:
     virtual void print(const std::string &prefix = "",
                        bool has_left = 0) const override;
-    virtual void append_ast_model_node(QStandardItem *parent) const override;
 
     std::unique_ptr<Expr> expr_;  ///< Loop condition expression
     std::unique_ptr<Stmt> stmt_;  ///< Loop body statement
@@ -281,7 +258,6 @@ class Do : public Stmt {
 public:
     virtual void print(const std::string &prefix = "",
                        bool has_left = 0) const override;
-    virtual void append_ast_model_node(QStandardItem *parent) const override;
 
     std::unique_ptr<Expr> expr_;  ///< Loop condition expression
     std::unique_ptr<Stmt> stmt_;  ///< Loop body statement
@@ -301,7 +277,6 @@ public:
  */
 class Break : public Stmt {
 public:
-    virtual void append_ast_model_node(QStandardItem *parent) const override;
     virtual void print(const std::string &prefix = "",
                        bool has_left = 0) const override;
 
@@ -316,7 +291,6 @@ class Set : public Stmt {
 public:
     virtual void print(const std::string &prefix = "",
                        bool has_left = 0) const override;
-    virtual void append_ast_model_node(QStandardItem *parent) const override;
 
     std::unique_ptr<Id> id_;      ///< Target identifier
     std::unique_ptr<Expr> expr_;  ///< Assigned expression
